@@ -10,7 +10,7 @@ const appointmentRepository: AppointmentRepository = new AppointmentRepository()
 appointmentsRouter.get('/', (req, res) => {
   const appointments = appointmentRepository.all();
 
-  res.json(appointments);
+  return res.json(appointments);
 });
 
 appointmentsRouter.post('/', (req, res) => {
@@ -21,11 +21,13 @@ appointmentsRouter.post('/', (req, res) => {
   const hasSameDate = appointmentRepository.findByDate(parsedDate);
 
   if (hasSameDate)
-    res.status(400).json({ error: 'This appointment is already booked.' });
+    return res
+      .status(400)
+      .json({ error: 'This appointment is already booked.' });
 
   const appointment = appointmentRepository.create(provider, parsedDate);
 
-  res.json(appointment);
+  return res.json(appointment);
 });
 
 export default appointmentsRouter;
