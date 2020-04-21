@@ -2,8 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { getRepository } from 'typeorm';
 
-import User from '../models/User';
 import uploadConfig from '../config/upload';
+import AppError from '../errors/AppError';
+import User from '../models/User';
 
 interface Request {
   user_id: string;
@@ -15,7 +16,7 @@ export default class UpdateUserAvatarService {
     const usersRepository = getRepository(User);
 
     const user = await usersRepository.findOne({ where: { id: user_id } });
-    if (!user) throw Error('User does not exist');
+    if (!user) throw new AppError('User does not exist', 404);
 
     if (user.avatar) {
       const avatarFilePath = path.join(uploadConfig.directory, user.avatar);
